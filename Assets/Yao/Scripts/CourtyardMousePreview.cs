@@ -23,7 +23,7 @@ public class CourtyardMousePreview : MonoBehaviour
             Ray ray = previewCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, 10f))
             {
-                CourtyardButton button = hit.collider.GetComponentInParent<CourtyardButton>();
+                FireAlarm button = hit.collider.GetComponentInParent<FireAlarm>();
                 if (button != null)
                     button.Press();
             }

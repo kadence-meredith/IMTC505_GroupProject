@@ -1,41 +1,46 @@
 using System.Collections;
 using UnityEngine;
 
-public class CourtyardButton : MonoBehaviour
+public class FireAlarm : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem confetti;
+    [SerializeField] private AudioSource alarmSound;
     [SerializeField] private Transform buttonTop;
     private Vector3 startPosition;
-    private bool isPlaying;
+    private bool buttonMoving;
 
     private void Awake()
     {
         startPosition = buttonTop.localPosition;
     }
 
-    // Called by the button's XR Simple Interactable Select Entered event.
+    // The same button starts and stops the alarm.
     public void Press()
     {
-        if (!isPlaying)
-            StartCoroutine(PlayConfetti());
+        if (buttonMoving)
+            return;
+
+        if (alarmSound.isPlaying)
+            alarmSound.Stop();
+        else
+            alarmSound.Play();
+
+        StartCoroutine(MoveButton());
     }
 
-    private IEnumerator PlayConfetti()
+    private IEnumerator MoveButton()
     {
-        isPlaying = true;
+        buttonMoving = true;
         buttonTop.localPosition = startPosition + Vector3.down * 0.04f;
-        confetti.Play(true);
         yield return new WaitForSeconds(0.25f);
         buttonTop.localPosition = startPosition;
-        yield return new WaitForSeconds(1.75f);
-        isPlaying = false;
+        buttonMoving = false;
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
         buttonTop.localPosition = startPosition;
-        confetti.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        isPlaying = false;
+        alarmSound.Stop();
+        buttonMoving = false;
     }
 }
